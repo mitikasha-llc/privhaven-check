@@ -6,10 +6,17 @@ copy that was published. A PrivHaven report can cite the checker version + hash 
 
 All artifacts are built from a single tagged commit, so nothing drifts between surfaces.
 
+The release workflow (`.github/workflows/release.yml`) regenerates these on each tag.
+
 | Artifact | SHA-256 |
 |---|---|
-| `dist/check.html` (offline single file) | _filled at release_ |
-| npm tarball (`privhaven-check-<version>.tgz`) | _filled at release_ |
+| `dist/check.html` — v0.1.0 (offline single file) | `sha256:bcdc1167b5016a1d4965529c7725e0ef9318f139d5ed6655c97ff6c068d65293` |
+| npm `privhaven-check@0.1.0` | via the registry: `npm view privhaven-check@0.1.0 dist.integrity` |
+
+> Reproduce the offline artifact's hash from a clean checkout:
+> ```sh
+> npm run build:html && shasum -a 256 dist/check.html
+> ```
 
 ## Bundled reference data
 

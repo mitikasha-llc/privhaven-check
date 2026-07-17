@@ -1,0 +1,43 @@
+name: Release
+
+# Publishes to npm and attaches the offline artifact on any `v*` tag.
+# Requires one repo secret: NPM_TOKEN (an automation token from the Mitikasha npm account).
+# See RELEASE.md — publish under the org / company identity, never a personal account.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write # create the GitHub Release
+  id-token: write # npm provenance (supply-chain attestation)
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+      - name: Test (no deps)
+        run: node --test
+      - name: Build offline single-file
+        run: node scripts/build-html.mjs
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Hash the offline artifact
+        id: hash
+        run: echo "sha256=$(shasum -a 256 dist/check.html | awk '{print $1}')" >> "$GITHUB_OUTPUT"
+      - name: GitHub Release
+        env:
+          # Untrusted-input-safe: tag/hash flow through env, not string-interpolated into the shell.
+          TAG: ${{ github.ref_name }}
+          SHA: ${{ steps.hash.outputs.sha256 }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$TAG" dist/check.html \
+            --title "privhaven-check $TAG" \
+            --notes "Engine-free verifier for PrivHaven compliance reports. Offline dist/check.html sha256: $SHA"

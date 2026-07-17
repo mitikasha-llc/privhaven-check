@@ -25,6 +25,30 @@
     "make-fixture": "node scripts/make-fixture.mjs",
     "build:html": "node scripts/build-html.mjs"
   },
+  "keywords": [
+    "privhaven",
+    "compliance",
+    "pii",
+    "redaction",
+    "gdpr",
+    "audit",
+    "verifier",
+    "evidence",
+    "sha256",
+    "reproducible"
+  ],
+  "author": "Mitikasha LLC",
   "license": "MIT",
+  "homepage": "https://github.com/mitikasha/privhaven-check#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mitikasha/privhaven-check.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mitikasha/privhaven-check/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {}
 }
