@@ -1,8 +1,8 @@
-// Generate an ILLUSTRATIVE v2 report.json for the sample CSV, so the CLI/browser tool can be run
-// end-to-end. It builds the report the way the engine would (validators + canonical + hashes) —
-// which makes it a good demo and a regression fixture, but note: a REAL report comes from the
-// PrivHaven engine. The one thing this cannot self-check is that our canonical JSON is byte-equal
-// to the engine's serde_json output — that is the CI cross-check in docs/VERIFIER_REDESIGN.md §7.
+// Generate an ILLUSTRATIVE v2 report.json for the sample CSV, for offline dev when you don't have
+// the engine handy. It builds the report the way the engine would (validators + canonical +
+// hashes). The COMMITTED test/fixtures/sample.report.json is instead a REAL engine-emitted report
+// (`privhaven-verify --emit`), so this script defaults to writing illustrative.report.json to
+// avoid clobbering it. The canonical JSON has been verified byte-equal to the engine's output.
 //
 //   node scripts/make-fixture.mjs [input.csv] [out.report.json]
 
@@ -59,7 +59,7 @@ export async function buildReport(inputText, inputBytes) {
 
 async function main() {
   const inPath = resolve(process.argv[2] ?? resolve(here, '../test/fixtures/sample.input.csv'));
-  const outPath = resolve(process.argv[3] ?? resolve(here, '../test/fixtures/sample.report.json'));
+  const outPath = resolve(process.argv[3] ?? resolve(here, '../test/fixtures/illustrative.report.json'));
   const bytes = await readFile(inPath);
   const { core, reportHash } = await buildReport(bytes.toString('utf8'), bytes);
   await writeFile(outPath, JSON.stringify(core, null, 2) + '\n');

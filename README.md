@@ -7,10 +7,12 @@ handled in a file. `privhaven-check` lets a third party confirm that evidence **
 copy of the file**, using only public algorithms — no PrivHaven engine, and nothing is ever
 uploaded.
 
-> **Status: scaffold (v0.1).** The checks run and are tested. Full per-finding soundness needs the
-> **v2 (located-findings) report** — see [Report versions](#report-versions). The one thing this
-> tool cannot self-prove — that its canonical JSON is byte-identical to the engine's — is locked by
-> a CI cross-check (see the [design doc](https://privhaven.com), `docs/VERIFIER_REDESIGN.md`).
+> **Status: v0.1.** The checks run and are tested. The engine now emits **v2 (located-findings)
+> reports**, so per-finding soundness is live. The checker's canonical JSON has been verified
+> **byte-identical** to the engine's `serde_json` output on a real report (1738 bytes) — so the
+> recomputed report hash matches the engine's, and `test/fixtures/sample.report.json` is a genuine
+> engine-emitted report. A CI cross-check keeps that equivalence honest. Design:
+> `docs/VERIFIER_REDESIGN.md` in the PrivHaven repo.
 
 ## Why trust this (and not have to)
 
@@ -35,7 +37,7 @@ so it drops into a pipeline or a pre-signing gate. `--json` emits machine-readab
 
 ```sh
 node bin/privhaven-check.js test/fixtures/sample.report.json test/fixtures/sample.input.csv \
-  --hash sha256:25393abf2a5ab80340719ee75819fdbb0d830dde998b5c4baa6e4b133d65adb6
+  --hash sha256:9767789d8645a731fa88b7e17acf502193de03c1b11629c6d8b5874518f63481
 ```
 
 ### Browser (zero install)
