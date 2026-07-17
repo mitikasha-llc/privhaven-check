@@ -131,3 +131,27 @@ test('a v1 (aggregate) report skips soundness rather than failing', async () => 
   const { checks } = await runChecks({ report: core, inputBytes: Buffer.from(''), inputText: '', sha256Hex });
   assert.equal(checks.find((c) => c.id === 'soundness').status, 'skip');
 });
+
+// Cross-check (checker side): the committed sample.report.json is a REAL engine emit. Assert our
+// canonical JSON reproduces the engine's golden canonical bytes exactly — the other half of the
+// engine⇄verifier contract (the engine repo asserts `--emit` still produces this golden).
+test('committed fixture: canonical JSON reproduces the engine golden byte-for-byte', async () => {
+  const pretty = await readFile(resolve(here, 'fixtures/sample.report.json'), 'utf8');
+  const golden = (await readFile(resolve(here, 'fixtures/sample.report.canonical.json'), 'utf8')).replace(/\n$/, '');
+  assert.equal(canonicalJson(JSON.parse(pretty)), golden, 'JS canonicalJson must equal the engine golden bytes');
+  assert.equal(sha256Hex(golden), 'sha256:9767789d8645a731fa88b7e17acf502193de03c1b11629c6d8b5874518f63481');
+});
+
+test('committed fixture verifies green end-to-end', async () => {
+  const report = JSON.parse(await readFile(resolve(here, 'fixtures/sample.report.json'), 'utf8'));
+  const inputBytes = await readFile(resolve(here, 'fixtures/sample.input.csv'));
+  const { ok, checks } = await runChecks({
+    report,
+    inputBytes,
+    inputText: inputBytes.toString('utf8'),
+    claimedHash: sha256Hex(canonicalJson(report)),
+    sha256Hex,
+  });
+  assert.ok(ok, 'the committed fixture should verify green');
+  assert.ok(checks.filter((c) => c.id === 'soundness').every((c) => c.status === 'pass' || c.status === 'info'));
+});

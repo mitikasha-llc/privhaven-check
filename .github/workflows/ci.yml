@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request: {}
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      # No runtime dependencies — nothing to install.
+      - name: Unit + cross-check tests
+        run: node --test
+      - name: CLI smoke — the committed (real engine) fixture verifies green
+        run: |
+          node bin/privhaven-check.js test/fixtures/sample.report.json test/fixtures/sample.input.csv \
+            --hash sha256:9767789d8645a731fa88b7e17acf502193de03c1b11629c6d8b5874518f63481
+      - name: Build the offline single-file
+        run: node scripts/build-html.mjs
