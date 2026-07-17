@@ -1,0 +1,30 @@
+{
+  "name": "privhaven-check",
+  "version": "0.1.0",
+  "description": "Engine-free, offline verifier for PrivHaven compliance reports. Confirms a report against your own copy of the file using public algorithms only — no PrivHaven engine, no upload.",
+  "type": "module",
+  "bin": {
+    "privhaven-check": "bin/privhaven-check.js"
+  },
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src",
+    "rulesets",
+    "bin",
+    "web",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test",
+    "make-fixture": "node scripts/make-fixture.mjs",
+    "build:html": "node scripts/build-html.mjs"
+  },
+  "license": "MIT",
+  "dependencies": {}
+}

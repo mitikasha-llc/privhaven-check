@@ -1,0 +1,8 @@
+2026.06.0
+us_ssn:ssn-structural:tokenize
+credit_card:luhn:tokenize
+email:email-format:tokenize
+phone:phone-format:tokenize
+iban:iban-mod97:tokenize
+aba_routing:aba-checksum:tokenize
+dob:header:mask

@@ -1,0 +1,5 @@
+email,ssn,card,notes,status
+a@x.com,123-45-6789,4111111111111111,Called about a refund yesterday,active
+b@y.org,001-23-4567,5555555555554444,Follow up with the customer next week,inactive
+c@z.net,078-05-1120,4012888888881881,Please escalate this billing issue,active
+d@w.io,121-09-1234,6011111111111117,Customer asked to update their address,active

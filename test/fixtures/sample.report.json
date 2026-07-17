@@ -1,0 +1,74 @@
+{
+  "schema": "privhaven.compliance-report/v2",
+  "engine": {
+    "version": "0.1.0",
+    "wasmSha256": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "ruleset": {
+    "version": "2026.06.0",
+    "sha256": "sha256:a530f68edc3ad1f89a7815eac36e2910066823925f4a6dd06cdac7c1084a91f3"
+  },
+  "run": {
+    "mode": "scan",
+    "inputs": [
+      {
+        "sha256": "sha256:e5624caf471303a036da413d191f5830b0caeacbc0f106aabdcfd0c5f9c45dca",
+        "bytes": 349
+      }
+    ],
+    "detection": {
+      "completeness": "full"
+    }
+  },
+  "findings": [
+    {
+      "type": "credit_card",
+      "column": "card",
+      "count": 4,
+      "validated": 4,
+      "lowConfidence": 0,
+      "validator": "luhn",
+      "action": "tokenize"
+    },
+    {
+      "type": "email",
+      "column": "email",
+      "count": 4,
+      "validated": 4,
+      "lowConfidence": 0,
+      "validator": "email-format",
+      "action": "tokenize"
+    },
+    {
+      "type": "us_ssn",
+      "column": "ssn",
+      "count": 4,
+      "validated": 4,
+      "lowConfidence": 0,
+      "validator": "ssn-structural",
+      "action": "tokenize"
+    }
+  ],
+  "residual": {
+    "riskScore": "0.42",
+    "riskComponents": [],
+    "remediation": [
+      "Tokenize the identified direct identifiers before sharing."
+    ]
+  },
+  "frameworks": {
+    "hipaaSafeHarbor": {
+      "identifiersAddressed": 2,
+      "of": 18,
+      "notDetectable": [
+        "names",
+        "biometric identifiers",
+        "full-face photos"
+      ]
+    },
+    "pciDss": {
+      "panFound": 4,
+      "panHandled": 4
+    }
+  }
+}

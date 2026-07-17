@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Verify a PrivHaven report</title>
+    <style>
+      :root { color-scheme: light dark; --fg: #16181d; --muted: #5b616e; --bg: #fff; --card: #f6f7f9; --line: #e3e6ea; --ok: #1e7d4f; --bad: #c0392b; --warn: #b06f00; }
+      @media (prefers-color-scheme: dark) { :root { --fg: #e6e8ec; --muted: #9aa1ad; --bg: #0f1115; --card: #171a20; --line: #2a2f38; --ok: #46c88a; --bad: #ff6b6b; --warn: #e0a33a; } }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.55 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+      main { max-width: 44rem; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+      h1 { font-size: 1.5rem; margin: 0 0 .35rem; }
+      .lede { color: var(--muted); margin: 0 0 1.75rem; }
+      .field { display: block; margin: 0 0 1rem; }
+      .field span { display: block; font-weight: 600; font-size: .9rem; margin-bottom: .3rem; }
+      input[type=file], input[type=text] { width: 100%; padding: .55rem .7rem; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--fg); font: inherit; }
+      button { margin-top: .5rem; padding: .6rem 1.2rem; border: 0; border-radius: 8px; background: #2f6df6; color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+      button:disabled { opacity: .6; cursor: default; }
+      #summary { margin: 1.5rem 0 .5rem; font-weight: 700; }
+      #summary.ok { color: var(--ok); } #summary.bad { color: var(--bad); }
+      ul { list-style: none; padding: 0; margin: 0; }
+      li { border: 1px solid var(--line); border-left-width: 4px; border-radius: 8px; padding: .6rem .8rem; margin: .5rem 0; background: var(--card); }
+      li.pass { border-left-color: var(--ok); } li.fail { border-left-color: var(--bad); }
+      li.warn { border-left-color: var(--warn); } li.skip, li.info { border-left-color: var(--line); }
+      li .t { font-weight: 600; } li .d { color: var(--muted); font-size: .9rem; margin-top: .15rem; word-break: break-word; }
+      .note { color: var(--muted); font-size: .85rem; margin-top: 2rem; border-top: 1px solid var(--line); padding-top: 1rem; }
+      code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Verify a PrivHaven compliance report</h1>
+      <p class="lede">
+        Everything runs in your browser. Your <code>report.json</code> and your original file
+        <strong>never leave this page</strong> — no upload, and no PrivHaven engine. The check uses
+        only public algorithms (checksums + SHA-256).
+      </p>
+
+      <label class="field"><span>report.json</span><input id="report" type="file" accept=".json,application/json" /></label>
+      <label class="field"><span>your original file (CSV)</span><input id="input" type="file" accept=".csv,text/csv" /></label>
+      <label class="field"><span>report hash — optional, from your report/PDF</span><input id="hash" type="text" placeholder="sha256:…" /></label>
+      <button id="run" type="button">Verify</button>
+
+      <p id="summary" hidden></p>
+      <ul id="results"></ul>
+
+      <p class="note">
+        This tool is a convenience. Its source is public and hash-pinned, and it runs offline — so you
+        never have to trust the copy you loaded. Verify what a PrivHaven report claims; a compliance
+        conclusion is still your auditor's to draw.
+      </p>
+    </main>
+
+    <script type="module">
+      import { runChecks } from '../src/index.js';
+
+      const sha256Hex = async (x) => {
+        const data = typeof x === 'string' ? new TextEncoder().encode(x) : x;
+        const d = await crypto.subtle.digest('SHA-256', data);
+        return 'sha256:' + [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, '0')).join('');
+      };
+      const $ = (id) => document.getElementById(id);
+      const readText = (f) => f.text();
+      const readBytes = async (f) => new Uint8Array(await f.arrayBuffer());
+
+      $('run').addEventListener('click', async () => {
+        const rf = $('report').files[0], inf = $('input').files[0];
+        const summary = $('summary'), results = $('results');
+        results.innerHTML = ''; summary.hidden = true; summary.className = '';
+        if (!rf || !inf) { summary.hidden = false; summary.textContent = 'Choose both a report.json and your original file.'; return; }
+        let report;
+        try { report = JSON.parse(await readText(rf)); }
+        catch (e) { summary.hidden = false; summary.className = 'bad'; summary.textContent = 'report.json is not valid JSON: ' + e.message; return; }
+        const inputBytes = await readBytes(inf);
+        const inputText = new TextDecoder().decode(inputBytes);
+        const claimedHash = $('hash').value.trim() || undefined;
+
+        const { ok, checks } = await runChecks({ report, inputBytes, inputText, claimedHash, sha256Hex });
+        for (const c of checks) {
+          const li = document.createElement('li');
+          li.className = c.status;
+          li.innerHTML = '<div class="t"></div><div class="d"></div>';
+          li.querySelector('.t').textContent = ({ pass: '✓ ', fail: '✗ ', warn: '! ', skip: '– ', info: '· ' }[c.status] || '') + c.title;
+          li.querySelector('.d').textContent = c.detail || '';
+          results.appendChild(li);
+        }
+        const fails = checks.filter((c) => c.status === 'fail').length;
+        summary.hidden = false;
+        summary.className = ok ? 'ok' : 'bad';
+        summary.textContent = ok ? 'VERIFIED — no mismatches.' : `NOT VERIFIED — ${fails} mismatch(es).`;
+      });
+    </script>
+  </body>
+</html>
