@@ -55,7 +55,7 @@
   },
   "residual": {
     "remediation": [
-      "1 free-text column(s) may contain PII that patterns can't guarantee — review manually: notes"
+      "1 free-text column(s) may contain PII that patterns can't guarantee. Review manually: notes"
     ],
     "riskComponents": [
       {

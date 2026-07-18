@@ -8,7 +8,7 @@ copy of the file**, using only public algorithms. No PrivHaven engine, and nothi
 
 > **Status: v0.1.** The checks run and are tested. The engine now emits **v2 (located-findings)
 > reports**, so per-finding soundness is live. The checker's canonical JSON has been verified
-> **byte-identical** to the engine's `serde_json` output on a real report (1738 bytes), so the
+> **byte-identical** to the engine's `serde_json` output on a real report (1735 bytes), so the
 > recomputed report hash matches the engine's, and `test/fixtures/sample.report.json` is a genuine
 > engine-emitted report. A CI cross-check keeps that equivalence honest. Design:
 > `docs/VERIFIER_REDESIGN.md` in the PrivHaven repo.
@@ -37,7 +37,7 @@ output.
 
 ```sh
 node bin/privhaven-check.js test/fixtures/sample.report.json test/fixtures/sample.input.csv \
-  --hash sha256:9767789d8645a731fa88b7e17acf502193de03c1b11629c6d8b5874518f63481
+  --hash sha256:f4a156e26f1d300f0e2eecc148fa5e78661251f043f7eae9f6f21e785b1e3c3d
 ```
 
 ### Browser (zero install)
