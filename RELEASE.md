@@ -43,6 +43,14 @@ CHECKER=/path/to/privhaven-check just cross-check      # byte-identical + green
 1. **Create the org** — <https://github.com/account/organizations/new>, name `mitikasha-llc`, Free plan.
 2. **Authenticate npm as the Mitikasha account** — `npm adduser` (interactive; browser/OTP).
    `npm whoami` must print a Mitikasha-owned account, never a personal one.
+3. ⚠️ **`npm whoami` succeeding is NOT publish capability.** With `two-factor auth: auth-and-writes`
+   (the default for new accounts), `npm publish` needs a **fresh OTP at publish time**. A
+   non-interactive publish cannot prompt for one — it dies with `403 ... Two-factor authentication
+   or granular access token with bypass 2fa enabled is required`. Learned the hard way on the
+   2026-07-18 first release: the script had already created the **public repo** before npm refused,
+   leaving the README's `npx privhaven-check` line publicly advertised and 404ing until the publish
+   landed. **Run `npm publish` from a real terminal**, or use a granular access token with
+   bypass-2FA for CI. `scripts/first-release.sh` now checks this before touching GitHub.
 
 Then run the whole release in one step:
 

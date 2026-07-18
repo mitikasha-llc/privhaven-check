@@ -20,6 +20,17 @@ gh api "orgs/$ORG" --jq '"github org: " + .login + " (" + (.type) + ")"' \
 NPM_USER="$(npm whoami 2>/dev/null || true)"
 [ -n "$NPM_USER" ] || { echo "!! npm not authenticated — run 'npm adduser' as the MITIKASHA npm account (not a personal one), then re-run."; exit 1; }
 echo "npm user: $NPM_USER"
+# whoami is NOT publish capability: with 2FA=auth-and-writes, publish needs a fresh OTP and a
+# non-interactive run cannot prompt for one. Check BEFORE creating the public repo — on the first
+# release this ordering was wrong and the repo went public while npm still refused, leaving the
+# README's `npx` line advertised and 404ing.
+if [ "$(npm profile get 2>/dev/null | awk -F": " '"'"'/two-factor auth/{print $2}'"'"')" != "disabled" ]; then
+  if [ ! -t 0 ]; then
+    echo "!! npm 2FA is on and this is not an interactive terminal — publish would 403 AFTER the"
+    echo "   public repo is created. Re-run from a real terminal, or publish with --otp."
+    exit 1
+  fi
+fi
 echo
 read -r -p "Publish PUBLICLY as org='$ORG', npm user='$NPM_USER'? [type YES] " ok
 [ "$ok" = "YES" ] || { echo "aborted."; exit 1; }
