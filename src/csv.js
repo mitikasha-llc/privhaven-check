@@ -1,4 +1,4 @@
-// Deterministic CSV parser — a faithful port of the engine's `parse.rs` dialect, so the checker
+// Deterministic CSV parser: a faithful port of the engine's `parse.rs` dialect, so the checker
 // splits cells exactly as the engine did (or the counts would diverge). Quoting: `"` opens/closes
 // a field, `""` is an escaped quote. Outside quotes: `,` ends a field, `\n` ends a row, `\r` is
 // dropped. A final unterminated row is emitted. Empty cells are preserved as "".
@@ -55,7 +55,7 @@ export function parseRows(input) {
 
 /**
  * Non-empty cell values of a named column. Mirrors the engine, whose `Field.values` are
- * `Option<String>` with empty ⇒ `None` — so empty cells are excluded from a column's population,
+ * `Option<String>` with empty ⇒ `None`, so empty cells are excluded from a column's population,
  * which is the population `count`/`validated` were computed over.
  */
 export function columnValues(table, name) {

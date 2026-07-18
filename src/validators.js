@@ -1,4 +1,4 @@
-// Public value validators — faithful ports of the PrivHaven engine's `validators.rs`.
+// Public value validators: faithful ports of the PrivHaven engine's `validators.rs`.
 //
 // These are STANDARD, published algorithms (Luhn, IBAN mod-97, ABA checksum, SSN structure,
 // email/phone shape). They are the only "engine" the checker contains: none of the proprietary
@@ -8,7 +8,7 @@
 const digitsOf = (s) => [...s].filter((c) => c >= '0' && c <= '9').map((c) => c.charCodeAt(0) - 48);
 const hasAlpha = (s) => /[A-Za-z]/.test(s);
 
-/** Credit-card PAN: digits/spaces/dashes only, length 12–19, Luhn-valid. Strong. */
+/** Credit-card PAN: digits/spaces/dashes only, length 12-19, Luhn-valid. Strong. */
 export function luhn(s) {
   if (hasAlpha(s)) return false;
   const d = digitsOf(s);
@@ -50,7 +50,7 @@ export function aba(s) {
   return sum !== 0 && sum % 10 === 0;
 }
 
-/** US SSN: 9 digits, structural validity (no checksum). Weak — leans on the header signal. */
+/** US SSN: 9 digits, structural validity (no checksum). Weak, leans on the header signal. */
 export function ssnStructural(s) {
   if (hasAlpha(s)) return false;
   const d = digitsOf(s);
@@ -74,7 +74,7 @@ export function email(s) {
   return tld.length >= 2 && /^[A-Za-z]+$/.test(tld);
 }
 
-/** Phone: separators + 10–11 digits (NANP), or `+` and 8–15 digits (E.164). Medium. */
+/** Phone: separators + 10-11 digits (NANP), or `+` and 8-15 digits (E.164). Medium. */
 export function phone(s) {
   const t = s.trim();
   if (t === '' || ![...t].every((c) => (c >= '0' && c <= '9') || ' -()+.'.includes(c))) return false;
@@ -84,7 +84,7 @@ export function phone(s) {
 
 /**
  * validator_name (as recorded in each finding) -> the public validator.
- * `header` (DOB) has no value validator — it is header-led, so a DOB finding cannot be
+ * `header` (DOB) has no value validator; it is header-led, so a DOB finding cannot be
  * value-checked from the file alone (reported as `not-value-checkable`, never a failure).
  */
 export const VALIDATORS = {
@@ -98,7 +98,7 @@ export const VALIDATORS = {
 };
 
 /**
- * Strong checksum validators used by the bonus completeness sweep — a checksum makes a
+ * Strong checksum validators used by the bonus completeness sweep. A checksum makes a
  * false-positive vanishingly unlikely, so a column that validates here but has no finding is a
  * credible "missed column". SSN/email/phone are excluded (structural/format only ⇒ too noisy).
  */

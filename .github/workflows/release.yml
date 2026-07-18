@@ -2,7 +2,7 @@ name: Release
 
 # Publishes to npm and attaches the offline artifact on any `v*` tag.
 # Requires one repo secret: NPM_TOKEN (an automation token from the Mitikasha npm account).
-# See RELEASE.md — publish under the org / company identity, never a personal account.
+# See RELEASE.md: publish under the org / company identity, never a personal account.
 on:
   push:
     tags: ['v*']

@@ -2,7 +2,7 @@
 //
 // The engine computes `reportHash` over this canonical form (serde_json `to_value` -> `to_vec`:
 // BTreeMap key order + compact, no whitespace). The downloaded `report.json` is PRETTY-printed,
-// so we must re-canonicalize the parsed object before hashing — never hash the file bytes.
+// so we must re-canonicalize the parsed object before hashing. Never hash the file bytes.
 //
 // Pure + isomorphic (no Node/browser APIs). Hashing is injected by the caller so this module
 // stays environment-free (see bin/ and web/ for the SHA-256 provider).

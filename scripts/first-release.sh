@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# First release of privhaven-check — run AFTER creating the GitHub org.
+# First release of privhaven-check: run AFTER creating the GitHub org.
 #
 #   scripts/first-release.sh <org-name>
 #
@@ -18,16 +18,16 @@ say "0. Identity check (entity/identity firewall)"
 gh api "orgs/$ORG" --jq '"github org: " + .login + " (" + (.type) + ")"' \
   || { echo "!! org '$ORG' not found or not visible to this token. Create it first, or re-auth."; exit 1; }
 NPM_USER="$(npm whoami 2>/dev/null || true)"
-[ -n "$NPM_USER" ] || { echo "!! npm not authenticated — run 'npm adduser' as the MITIKASHA npm account (not a personal one), then re-run."; exit 1; }
+[ -n "$NPM_USER" ] || { echo "!! npm not authenticated, run 'npm adduser' as the MITIKASHA npm account (not a personal one), then re-run."; exit 1; }
 echo "npm user: $NPM_USER"
 # whoami is NOT publish capability: with 2FA=auth-and-writes, publish needs a fresh OTP and a
-# non-interactive run cannot prompt for one. Check BEFORE creating the public repo — on the first
+# non-interactive run cannot prompt for one. Check BEFORE creating the public repo, on the first
 # release this ordering was wrong and the repo went public while npm still refused, leaving the
 # README's `npx` line advertised and 404ing.
 TFA="$(npm profile get 2>/dev/null | sed -n 's/^two-factor auth: //p')"
 echo "npm 2FA: ${TFA:-unknown}"
 if [ "$TFA" != "disabled" ] && [ ! -t 0 ]; then
-  echo "!! npm 2FA is '${TFA:-unknown}' and stdin is not a terminal — publish would 403 AFTER the"
+  echo "!! npm 2FA is '${TFA:-unknown}' and stdin is not a terminal, publish would 403 AFTER the"
   echo "   public repo is created. Re-run from a real terminal, or publish with --otp."
   exit 1
 fi
@@ -52,7 +52,7 @@ say "2. Pre-flight (must be green before anything is published)"
 npm test
 npm run build:html
 BUILT="$(shasum -a 256 dist/check.html | awk '{print $1}')"
-grep -q "$BUILT" MANIFEST.md || { echo "!! dist/check.html sha256 $BUILT is NOT in MANIFEST.md — refusing to publish"; exit 1; }
+grep -q "$BUILT" MANIFEST.md || { echo "!! dist/check.html sha256 $BUILT is NOT in MANIFEST.md, refusing to publish"; exit 1; }
 echo "artifact hash matches MANIFEST.md: $BUILT"
 
 say "3. GitHub (public, under the org)"
@@ -70,9 +70,9 @@ gh release create "$VER" dist/check.html \
 
 say "Done. Now wire the rest (RELEASE.md §After the first publish)"
 cat <<EOF
-  1. privhaven /verify page — add the CLI (npx privhaven-check report.json file.csv)
+  1. privhaven /verify page, add the CLI (npx privhaven-check report.json file.csv)
      and the offline download; the page deliberately mentions neither today.
-  2. privhaven CI — the verify-cross-check job in ci-full.yml auto-activates now
+  2. privhaven CI, the verify-cross-check job in ci-full.yml auto-activates now
      that the package resolves on npm.
   3. Add NPM_TOKEN as a repo secret so .github/workflows/release.yml handles v* tags.
 EOF

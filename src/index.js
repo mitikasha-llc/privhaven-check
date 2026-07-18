@@ -1,4 +1,4 @@
-// privhaven-check — engine-free verifier for PrivHaven compliance reports.
+// privhaven-check: engine-free verifier for PrivHaven compliance reports.
 // Public API. Isomorphic (Node + browser); the caller injects a SHA-256 provider.
 export { runChecks } from './checks.js';
 export { canonicalJson } from './canonical.js';

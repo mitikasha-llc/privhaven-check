@@ -1,7 +1,7 @@
 {
   "name": "privhaven-check",
-  "version": "0.1.0",
-  "description": "Engine-free, offline verifier for PrivHaven compliance reports. Confirms a report against your own copy of the file using public algorithms only — no PrivHaven engine, no upload.",
+  "version": "0.1.1",
+  "description": "Engine-free, offline verifier for PrivHaven compliance reports. Confirms a report against your own copy of the file using public algorithms only. No PrivHaven engine, no upload.",
   "type": "module",
   "bin": {
     "privhaven-check": "bin/privhaven-check.js"

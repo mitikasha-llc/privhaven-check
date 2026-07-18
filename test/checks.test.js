@@ -1,4 +1,4 @@
-// Hermetic tests — no engine, no committed fixture dependency. Validator vectors are copied from
+// Hermetic tests: no engine, no committed fixture dependency. Validator vectors are copied from
 // the engine's validators.rs #[test] blocks so a port drift fails here.
 
 import { test } from 'node:test';
@@ -133,7 +133,7 @@ test('a v1 (aggregate) report skips soundness rather than failing', async () => 
 });
 
 // Cross-check (checker side): the committed sample.report.json is a REAL engine emit. Assert our
-// canonical JSON reproduces the engine's golden canonical bytes exactly — the other half of the
+// canonical JSON reproduces the engine's golden canonical bytes exactly, the other half of the
 // engine⇄verifier contract (the engine repo asserts `--emit` still produces this golden).
 test('committed fixture: canonical JSON reproduces the engine golden byte-for-byte', async () => {
   const pretty = await readFile(resolve(here, 'fixtures/sample.report.json'), 'utf8');

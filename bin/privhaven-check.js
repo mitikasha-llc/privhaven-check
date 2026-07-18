@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// privhaven-check — verify a PrivHaven compliance report against your own copy of the file,
+// privhaven-check: verify a PrivHaven compliance report against your own copy of the file,
 // entirely offline, using only public algorithms. Nothing is uploaded; no PrivHaven engine runs.
 //
 //   privhaven-check <report.json> <input.csv> [--hash sha256:...] [--json] [--threshold N]
@@ -43,7 +43,7 @@ Exit: 0 verified · 1 a check failed (MISMATCH) · 2 usage/I-O error.`;
 const C = { reset: '\x1b[0m', red: '\x1b[31m', green: '\x1b[32m', yellow: '\x1b[33m', dim: '\x1b[2m', bold: '\x1b[1m' };
 const color = process.stdout.isTTY;
 const paint = (s, c) => (color ? c + s + C.reset : s);
-const MARK = { pass: ['✓', C.green], fail: ['✗', C.red], warn: ['!', C.yellow], skip: ['–', C.dim], info: ['·', C.dim] };
+const MARK = { pass: ['✓', C.green], fail: ['✗', C.red], warn: ['!', C.yellow], skip: ['-', C.dim], info: ['·', C.dim] };
 
 async function main() {
   const { pos, opts } = parseArgs(process.argv.slice(2));
@@ -78,8 +78,8 @@ async function main() {
     const fails = result.checks.filter((c) => c.status === 'fail').length;
     const warns = result.checks.filter((c) => c.status === 'warn').length;
     console.log('');
-    if (result.ok) console.log(paint(`VERIFIED — no mismatches${warns ? ` (${warns} advisory warning${warns > 1 ? 's' : ''})` : ''}.`, C.green));
-    else console.log(paint(`NOT VERIFIED — ${fails} mismatch${fails > 1 ? 'es' : ''}. See the ✗ lines above.`, C.red));
+    if (result.ok) console.log(paint(`VERIFIED. No mismatches${warns ? ` (${warns} advisory warning${warns > 1 ? 's' : ''})` : ''}.`, C.green));
+    else console.log(paint(`NOT VERIFIED. ${fails} mismatch${fails > 1 ? 'es' : ''}. See the ✗ lines above.`, C.red));
     console.log('');
   }
   return result.ok ? 0 : 1;

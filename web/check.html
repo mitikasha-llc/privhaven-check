@@ -33,20 +33,20 @@
       <h1>Verify a PrivHaven compliance report</h1>
       <p class="lede">
         Everything runs in your browser. Your <code>report.json</code> and your original file
-        <strong>never leave this page</strong> — no upload, and no PrivHaven engine. The check uses
+        <strong>never leave this page</strong>, with no upload, and no PrivHaven engine. The check uses
         only public algorithms (checksums + SHA-256).
       </p>
 
       <label class="field"><span>report.json</span><input id="report" type="file" accept=".json,application/json" /></label>
       <label class="field"><span>your original file (CSV)</span><input id="input" type="file" accept=".csv,text/csv" /></label>
-      <label class="field"><span>report hash — optional, from your report/PDF</span><input id="hash" type="text" placeholder="sha256:…" /></label>
+      <label class="field"><span>report hash (optional, from your report/PDF)</span><input id="hash" type="text" placeholder="sha256:…" /></label>
       <button id="run" type="button">Verify</button>
 
       <p id="summary" hidden></p>
       <ul id="results"></ul>
 
       <p class="note">
-        This tool is a convenience. Its source is public and hash-pinned, and it runs offline — so you
+        This tool is a convenience. Its source is public and hash-pinned, and it runs offline, so you
         never have to trust the copy you loaded. Verify what a PrivHaven report claims; a compliance
         conclusion is still your auditor's to draw.
       </p>
@@ -81,14 +81,14 @@
           const li = document.createElement('li');
           li.className = c.status;
           li.innerHTML = '<div class="t"></div><div class="d"></div>';
-          li.querySelector('.t').textContent = ({ pass: '✓ ', fail: '✗ ', warn: '! ', skip: '– ', info: '· ' }[c.status] || '') + c.title;
+          li.querySelector('.t').textContent = ({ pass: '✓ ', fail: '✗ ', warn: '! ', skip: '- ', info: '· ' }[c.status] || '') + c.title;
           li.querySelector('.d').textContent = c.detail || '';
           results.appendChild(li);
         }
         const fails = checks.filter((c) => c.status === 'fail').length;
         summary.hidden = false;
         summary.className = ok ? 'ok' : 'bad';
-        summary.textContent = ok ? 'VERIFIED — no mismatches.' : `NOT VERIFIED — ${fails} mismatch(es).`;
+        summary.textContent = ok ? 'VERIFIED. No mismatches.' : `NOT VERIFIED. ${fails} mismatch(es).`;
       });
     </script>
   </body>

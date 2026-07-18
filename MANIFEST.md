@@ -1,7 +1,7 @@
 # Release manifest
 
 Each release publishes the SHA-256 of every distributable artifact here (and in the GitHub
-Release), so the copy you run — CLI, npm package, or offline `dist/check.html` — is provably the
+Release), so the copy you run, CLI, npm package, or offline `dist/check.html`, is provably the
 copy that was published. A PrivHaven report can cite the checker version + hash it targets.
 
 All artifacts are built from a single tagged commit, so nothing drifts between surfaces.
@@ -10,7 +10,7 @@ The release workflow (`.github/workflows/release.yml`) regenerates these on each
 
 | Artifact | SHA-256 |
 |---|---|
-| `dist/check.html` — v0.1.0 (offline single file) | `sha256:bcdc1167b5016a1d4965529c7725e0ef9318f139d5ed6655c97ff6c068d65293` |
+| `dist/check.html`, v0.1.1 (offline single file) | `sha256:2be6a5251a8a347873d99854a781188dfc1f7530cf032b00da94a9c710cb3207` |
 | npm `privhaven-check@0.1.0` | via the registry: `npm view privhaven-check@0.1.0 dist.integrity` |
 
 > Reproduce the offline artifact's hash from a clean checkout:

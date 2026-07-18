@@ -1,9 +1,9 @@
-// Ruleset identity — the descriptor a report's `ruleset.sha256` is computed over.
+// Ruleset identity: the descriptor a report's `ruleset.sha256` is computed over.
 //
 // The engine (`ruleset.rs`) builds the descriptor as: the version, then for each detected type in
 // a FIXED order, a `\n<type>:<validator_name>:<default_action>` line (no trailing newline). The
 // hash is `sha256:<hex>` over those UTF-8 bytes. We rebuild it byte-for-byte here and recompute
-// the hash, so an auditor confirms the report ran under the rules it names — none of the actual
+// the hash, so an auditor confirms the report ran under the rules it names. None of the actual
 // matching logic (the moat) is needed for that.
 //
 // A new ruleset version adds an entry below (and a copy at rulesets/<version>.txt for humans).

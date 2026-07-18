@@ -1,4 +1,4 @@
-// Build dist/check.html — a single self-contained file that runs the verifier fully offline
+// Build dist/check.html: a single self-contained file that runs the verifier fully offline
 // (air-gapped). It inlines the src modules into web/check.html's <script>, so the published
 // artifact has no imports and no network needs. One source, so it can't drift from the CLI.
 //
@@ -11,7 +11,7 @@ import { dirname, resolve } from 'node:path';
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
 
-// Concatenation order respects the dependency graph (index.js is skipped — it only re-exports).
+// Concatenation order respects the dependency graph (index.js is skipped, it only re-exports).
 const MODULES = ['src/canonical.js', 'src/validators.js', 'src/csv.js', 'src/ruleset.js', 'src/checks.js'];
 
 function inline(src) {
