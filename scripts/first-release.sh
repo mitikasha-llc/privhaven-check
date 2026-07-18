@@ -24,12 +24,12 @@ echo "npm user: $NPM_USER"
 # non-interactive run cannot prompt for one. Check BEFORE creating the public repo — on the first
 # release this ordering was wrong and the repo went public while npm still refused, leaving the
 # README's `npx` line advertised and 404ing.
-if [ "$(npm profile get 2>/dev/null | awk -F": " '"'"'/two-factor auth/{print $2}'"'"')" != "disabled" ]; then
-  if [ ! -t 0 ]; then
-    echo "!! npm 2FA is on and this is not an interactive terminal — publish would 403 AFTER the"
-    echo "   public repo is created. Re-run from a real terminal, or publish with --otp."
-    exit 1
-  fi
+TFA="$(npm profile get 2>/dev/null | sed -n 's/^two-factor auth: //p')"
+echo "npm 2FA: ${TFA:-unknown}"
+if [ "$TFA" != "disabled" ] && [ ! -t 0 ]; then
+  echo "!! npm 2FA is '${TFA:-unknown}' and stdin is not a terminal — publish would 403 AFTER the"
+  echo "   public repo is created. Re-run from a real terminal, or publish with --otp."
+  exit 1
 fi
 echo
 read -r -p "Publish PUBLICLY as org='$ORG', npm user='$NPM_USER'? [type YES] " ok
