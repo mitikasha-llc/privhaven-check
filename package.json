@@ -39,13 +39,13 @@
   ],
   "author": "Mitikasha LLC",
   "license": "MIT",
-  "homepage": "https://github.com/mitikasha/privhaven-check#readme",
+  "homepage": "https://github.com/mitikasha-llc/privhaven-check#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mitikasha/privhaven-check.git"
+    "url": "git+https://github.com/mitikasha-llc/privhaven-check.git"
   },
   "bugs": {
-    "url": "https://github.com/mitikasha/privhaven-check/issues"
+    "url": "https://github.com/mitikasha-llc/privhaven-check/issues"
   },
   "publishConfig": {
     "access": "public"
