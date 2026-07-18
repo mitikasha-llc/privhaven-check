@@ -9,8 +9,15 @@ manual on purpose: publishing is outward-facing and irreversible.
 Per the Mitikasha **entity/identity firewall**, this package must be owned by the **company, not a
 person**:
 
-- **GitHub:** create the repo under the **`mitikasha` org** — `github.com/mitikasha/privhaven-check`
-  (public). Not a personal account.
+- **GitHub:** publish under the **`mitikasha-llc` organization** — `github.com/mitikasha-llc/privhaven-check`
+  (public). **Not a personal account.**
+  ⚠️ **Corrected 2026-07-18:** this file used to say "the `mitikasha` org". **No such org exists.**
+  `mitikasha` is a personal **User** account (with 0 public repos), so following the old instruction
+  would have made this the first public repo tied to a personal identity — the exact firewall breach
+  the section exists to prevent. The org must be **created first** (GitHub UI:
+  <https://github.com/account/organizations/new>, Free plan is fine — the API cannot create orgs);
+  `mitikasha` itself is unavailable as an org name because the user account holds it.
+  `mitikasha-llc` was verified available on 2026-07-18 and matches `author: "Mitikasha LLC"`.
 - **npm:** publish from a **Mitikasha-owned npm account/org**, author `Mitikasha LLC` (already in
   `package.json`). Do **not** publish from a personal npm identity, and do not add personal names to
   author/contributor fields.
@@ -31,21 +38,22 @@ CHECKER=/path/to/privhaven-check just cross-check      # byte-identical + green
 
 ## First publish (manual, one-time)
 
+**Prerequisites** (both are manual and neither can be scripted):
+
+1. **Create the org** — <https://github.com/account/organizations/new>, name `mitikasha-llc`, Free plan.
+2. **Authenticate npm as the Mitikasha account** — `npm adduser` (interactive; browser/OTP).
+   `npm whoami` must print a Mitikasha-owned account, never a personal one.
+
+Then run the whole release in one step:
+
 ```sh
-# 1. GitHub (public, under the org)
-gh repo create mitikasha/privhaven-check --public --source=. --remote=origin --push
-
-# 2. npm (from the Mitikasha npm account)
-npm login                                  # Mitikasha account
-npm publish                                # publishConfig.access=public is set
-
-# 3. Tag + GitHub release with the offline artifact attached
-git tag v0.1.0 && git push origin v0.1.0
-npm run build:html
-gh release create v0.1.0 dist/check.html \
-  --title "privhaven-check v0.1.0" \
-  --notes "Engine-free verifier for PrivHaven reports. Offline dist/check.html sha256: $(shasum -a 256 dist/check.html | awk '{print $1}')"
+scripts/first-release.sh mitikasha-llc
 ```
+
+It verifies the org exists and npm is authenticated, prints both identities and requires a typed
+`YES` before anything is published, rewrites the package URLs to the real org, runs the tests, refuses
+to continue unless `dist/check.html`'s sha256 is the one recorded in `MANIFEST.md`, then creates the
+public repo, publishes to npm, tags, and attaches the offline artifact to a GitHub release.
 
 ## Automated releases (after the first)
 
