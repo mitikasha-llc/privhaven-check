@@ -59,6 +59,11 @@ test('ruleset descriptor matches the published rulesets/2026.06.0.txt', async ()
   assert.equal(descriptorFor('nope'), null);
 });
 
+test('ruleset descriptor matches the published rulesets/2026.10.0.txt', async () => {
+  const txt = await readFile(resolve(here, '../rulesets/2026.10.0.txt'), 'utf8');
+  assert.equal(descriptorFor('2026.10.0'), txt.replace(/\n$/, ''));
+});
+
 test('CSV dialect: quotes, escaped quotes, CRLF, empty cells', () => {
   const t = parseTable('a,b,c\r\n1,"x,y","he said ""hi""",\n,z,');
   assert.deepEqual(t.header, ['a', 'b', 'c']);
@@ -139,7 +144,7 @@ test('committed fixture: canonical JSON reproduces the engine golden byte-for-by
   const pretty = await readFile(resolve(here, 'fixtures/sample.report.json'), 'utf8');
   const golden = (await readFile(resolve(here, 'fixtures/sample.report.canonical.json'), 'utf8')).replace(/\n$/, '');
   assert.equal(canonicalJson(JSON.parse(pretty)), golden, 'JS canonicalJson must equal the engine golden bytes');
-  assert.equal(sha256Hex(golden), 'sha256:f4a156e26f1d300f0e2eecc148fa5e78661251f043f7eae9f6f21e785b1e3c3d');
+  assert.equal(sha256Hex(golden), 'sha256:15897b09ed34063ecde011af4516b3bb8ebd358f7357c5c4d59dd7080d5a5b45');
 });
 
 test('committed fixture verifies green end-to-end', async () => {

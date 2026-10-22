@@ -18,6 +18,17 @@ export const RULESETS = {
     ['aba_routing', 'aba-checksum', 'tokenize'],
     ['dob', 'header', 'mask'],
   ],
+  // Same detection rules. The engine's framework mapping changed: HIPAA Safe Harbor counts only
+  // redact/drop as removal, and a scan counts nothing as addressed or PCI-handled.
+  '2026.10.0': [
+    ['us_ssn', 'ssn-structural', 'tokenize'],
+    ['credit_card', 'luhn', 'tokenize'],
+    ['email', 'email-format', 'tokenize'],
+    ['phone', 'phone-format', 'tokenize'],
+    ['iban', 'iban-mod97', 'tokenize'],
+    ['aba_routing', 'aba-checksum', 'tokenize'],
+    ['dob', 'header', 'mask'],
+  ],
 };
 
 /** Byte-exact descriptor for a version, or null if unknown. */

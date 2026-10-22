@@ -1,6 +1,6 @@
 {
   "engine": {
-    "version": "0.1.0",
+    "version": "0.2.0",
     "wasmSha256": "sha256:native"
   },
   "findings": [
@@ -34,7 +34,7 @@
   ],
   "frameworks": {
     "hipaaSafeHarbor": {
-      "identifiersAddressed": 3,
+      "identifiersAddressed": 0,
       "notDetectable": [
         "Biometric identifiers",
         "Certificate/license numbers",
@@ -46,11 +46,16 @@
         "Names",
         "Vehicle identifiers"
       ],
+      "notRemoved": [
+        "Account numbers",
+        "Electronic mail addresses",
+        "Social Security numbers"
+      ],
       "of": 18
     },
     "pciDss": {
       "panFound": 4,
-      "panHandled": 4
+      "panHandled": 0
     }
   },
   "residual": {
@@ -98,8 +103,8 @@
     "riskScore": "0.10"
   },
   "ruleset": {
-    "sha256": "sha256:a530f68edc3ad1f89a7815eac36e2910066823925f4a6dd06cdac7c1084a91f3",
-    "version": "2026.06.0"
+    "sha256": "sha256:587085f3e695172f4dc7c6de9fdf98d0841f1efe572a866e729273e5493708e3",
+    "version": "2026.10.0"
   },
   "run": {
     "detection": {
@@ -113,5 +118,5 @@
     ],
     "mode": "scan"
   },
-  "schema": "privhaven.compliance-report/v2"
+  "schema": "privhaven.compliance-report/v3"
 }

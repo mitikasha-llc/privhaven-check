@@ -22,6 +22,6 @@ jobs:
       - name: CLI smoke, the committed (real engine) fixture verifies green
         run: |
           node bin/privhaven-check.js test/fixtures/sample.report.json test/fixtures/sample.input.csv \
-            --hash sha256:f4a156e26f1d300f0e2eecc148fa5e78661251f043f7eae9f6f21e785b1e3c3d
+            --hash sha256:15897b09ed34063ecde011af4516b3bb8ebd358f7357c5c4d59dd7080d5a5b45
       - name: Build the offline single-file
         run: node scripts/build-html.mjs

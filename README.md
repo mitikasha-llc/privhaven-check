@@ -37,7 +37,7 @@ output.
 
 ```sh
 node bin/privhaven-check.js test/fixtures/sample.report.json test/fixtures/sample.input.csv \
-  --hash sha256:f4a156e26f1d300f0e2eecc148fa5e78661251f043f7eae9f6f21e785b1e3c3d
+  --hash sha256:15897b09ed34063ecde011af4516b3bb8ebd358f7357c5c4d59dd7080d5a5b45
 ```
 
 ### Browser (zero install)
@@ -71,6 +71,10 @@ alone and are reported as such, never as a failure.
 
 ## Report versions
 
+- **v3** (`privhaven.compliance-report/v3`, ruleset `2026.10.0`): as v2, and the HIPAA Safe Harbor
+  block counts a category as addressed only when every finding in it was redacted or dropped
+  (tokens and masks are not removal), lists the rest in `notRemoved`, and a scan counts nothing
+  as addressed or PCI-handled. All five checks run.
 - **v2** (`privhaven.compliance-report/v2`): findings carry a `column` locator; all five checks run.
 - **v1**: aggregate findings with no locators; checks 1 to 3 run, soundness is **skipped** (not
   failed) with a note to recompute the hash and re-run in the app.
