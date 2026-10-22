@@ -1,7 +1,9 @@
 name: Release
 
 # Publishes to npm and attaches the offline artifact on any `v*` tag.
-# Requires one repo secret: NPM_TOKEN (an automation token from the Mitikasha npm account).
+# Publishes with npm trusted publishing (GitHub OIDC): no token is stored, and npm adds
+# provenance automatically. The trusted publisher is configured on npmjs.com for
+# mitikasha-llc/privhaven-check, workflow release.yml. Needs Node >= 22.14 and npm >= 11.5.1.
 # See RELEASE.md: publish under the org / company identity, never a personal account.
 on:
   push:
@@ -9,25 +11,25 @@ on:
 
 permissions:
   contents: write # create the GitHub Release
-  id-token: write # npm provenance (supply-chain attestation)
+  id-token: write # npm trusted publishing (OIDC) and provenance
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
           registry-url: https://registry.npmjs.org
       - name: Test (no deps)
         run: node --test
       - name: Build offline single-file
         run: node scripts/build-html.mjs
-      - name: Publish to npm
-        run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Use the latest npm (trusted publishing needs npm >= 11.5.1)
+        run: npm install -g npm@latest && npm --version
+      - name: Publish to npm (OIDC, no token)
+        run: npm publish --access public
       - name: Hash the offline artifact
         id: hash
         run: echo "sha256=$(shasum -a 256 dist/check.html | awk '{print $1}')" >> "$GITHUB_OUTPUT"

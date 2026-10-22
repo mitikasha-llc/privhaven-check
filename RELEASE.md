@@ -66,8 +66,12 @@ public repo, publishes to npm, tags, and attaches the offline artifact to a GitH
 ## Automated releases (after the first)
 
 `.github/workflows/release.yml` publishes to npm + attaches `dist/check.html` on any `v*` tag. It
-needs one repo secret: **`NPM_TOKEN`** (an automation token from the Mitikasha npm account). Then a
-release is just:
+uses **npm trusted publishing** (GitHub OIDC), set up on npmjs.com on 2026-10-22: the package's
+trusted publisher is GitHub Actions, `mitikasha-llc/privhaven-check`, workflow `release.yml`. No
+token is stored in the repo, no OTP is needed, and npm adds provenance automatically. It needs Node
+22.14+ and npm 11.5.1+ (the workflow installs the latest npm), and `repository.url` in
+`package.json` must match the repo exactly. Before this, every tag run failed for want of a token
+and releases were published by hand. Then a release is just:
 
 ```sh
 npm version patch    # or minor/major, bumps package.json + tags
