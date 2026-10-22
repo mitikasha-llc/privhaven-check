@@ -67,15 +67,19 @@ public repo, publishes to npm, tags, and attaches the offline artifact to a GitH
 
 `.github/workflows/release.yml` publishes to npm + attaches `dist/check.html` on any `v*` tag. It
 uses **npm trusted publishing** (GitHub OIDC), set up on npmjs.com on 2026-10-22: the package's
-trusted publisher is GitHub Actions, `mitikasha-llc/privhaven-check`, workflow `release.yml`. No
-token is stored in the repo, no OTP is needed, and npm adds provenance automatically. It needs Node
-22.14+ and npm 11.5.1+ (the workflow installs the latest npm), and `repository.url` in
-`package.json` must match the repo exactly. Before this, every tag run failed for want of a token
-and releases were published by hand. Then a release is just:
+trusted publisher is GitHub Actions, `mitikasha-llc/privhaven-check`, workflow `release.yml`,
+environment `mitikasha-privhaven`, with the **"stage publish" permission only**. So the workflow
+**stages** the version (`npm stage publish`) and nothing is public until a maintainer approves it
+with 2FA: `npm stage list privhaven-check`, then `npm stage approve <stage-id>`. No token is stored
+in the repo. It needs Node 22.14+ and npm 11.15.0+ (the workflow installs the latest npm), the job
+must declare that environment, and `repository.url` in `package.json` must match the repo exactly.
+Before this, every tag run failed for want of a token and releases were published by hand. Then a
+release is:
 
 ```sh
 npm version patch    # or minor/major, bumps package.json + tags
 git push --follow-tags
+npm stage list privhaven-check && npm stage approve <stage-id>   # Mitikasha npm account, 2FA
 ```
 
 ## After the first publish: wire the rest
