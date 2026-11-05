@@ -144,7 +144,7 @@ test('committed fixture: canonical JSON reproduces the engine golden byte-for-by
   const pretty = await readFile(resolve(here, 'fixtures/sample.report.json'), 'utf8');
   const golden = (await readFile(resolve(here, 'fixtures/sample.report.canonical.json'), 'utf8')).replace(/\n$/, '');
   assert.equal(canonicalJson(JSON.parse(pretty)), golden, 'JS canonicalJson must equal the engine golden bytes');
-  assert.equal(sha256Hex(golden), 'sha256:15897b09ed34063ecde011af4516b3bb8ebd358f7357c5c4d59dd7080d5a5b45');
+  assert.equal(sha256Hex(golden), 'sha256:5a379d9105019d193e0bf52e0a9baacfe2aa92289c1bb80db4645f2a8416cda9');
 });
 
 test('committed fixture verifies green end-to-end', async () => {

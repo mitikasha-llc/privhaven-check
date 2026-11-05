@@ -46,4 +46,4 @@ jobs:
         run: |
           gh release create "$TAG" dist/check.html \
             --title "privhaven-check $TAG" \
-            --notes "Engine-free verifier for PrivHaven compliance reports. Offline dist/check.html sha256: $SHA"
+            --notes "Engine-free verifier for PrivHaven reproducible reports. Offline dist/check.html sha256: $SHA"

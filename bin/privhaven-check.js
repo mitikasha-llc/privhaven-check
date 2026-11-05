@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// privhaven-check: verify a PrivHaven compliance report against your own copy of the file,
+// privhaven-check: verify a PrivHaven report against your own copy of the file,
 // entirely offline, using only public algorithms. Nothing is uploaded; no PrivHaven engine runs.
 //
 //   privhaven-check <report.json> <input.csv> [--hash sha256:...] [--json] [--threshold N]
@@ -29,7 +29,7 @@ function parseArgs(argv) {
 
 const USAGE = `privhaven-check <report.json> <input.csv> [options]
 
-Verify a PrivHaven compliance report against your own copy of the original file.
+Verify a PrivHaven report against your own copy of the original file.
 Runs entirely on your machine; the file is never uploaded and no PrivHaven engine runs.
 
 Options:

@@ -1,6 +1,6 @@
 # privhaven-check
 
-**An engine-free, offline verifier for [PrivHaven](https://privhaven.com) compliance reports.**
+**An engine-free, offline verifier for [PrivHaven](https://privhaven.com) reproducible, tamper-evident reports.**
 
 A PrivHaven report is *evidence, not certification*: it attests which personal data was found and
 handled in a file. `privhaven-check` lets a third party confirm that evidence **against their own
@@ -37,7 +37,7 @@ output.
 
 ```sh
 node bin/privhaven-check.js test/fixtures/sample.report.json test/fixtures/sample.input.csv \
-  --hash sha256:15897b09ed34063ecde011af4516b3bb8ebd358f7357c5c4d59dd7080d5a5b45
+  --hash sha256:5a379d9105019d193e0bf52e0a9baacfe2aa92289c1bb80db4645f2a8416cda9
 ```
 
 ### Browser (zero install)
@@ -60,7 +60,7 @@ original file; it verifies locally.
 
 - **Does:** every finding the report makes is a real, correctly-validated instance at a citable
   location, and the report is tamper-evident.
-- **Doesn't:** a legal compliance conclusion (that one is your auditor's), or full *completeness*,
+- **Doesn't:** decide whether the findings meet a legal obligation (that one is your auditor's), or full *completeness*,
   meaning proof that the engine missed nothing. Completeness for checksum types is spot-checked by
   #5; the rest stays with the (private) engine, and PrivHaven discloses its detection limits
   separately.
