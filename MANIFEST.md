@@ -10,8 +10,8 @@ The release workflow (`.github/workflows/release.yml`) regenerates these on each
 
 | Artifact | SHA-256 |
 |---|---|
-| `dist/check.html`, v0.1.3 (offline single file) | `sha256:731965de927d52779c1b5787394f74b2fea8e945913244ebb19869d4952eaf36` |
-| npm `privhaven-check@0.1.0` | via the registry: `npm view privhaven-check@0.1.0 dist.integrity` |
+| `dist/check.html`, v0.1.4 (offline single file) | `sha256:633202d8b15c3bd9f0cbf840ae9852b52d2f2963b9540ebb040165fb9d48bf1c` |
+| npm `privhaven-check@0.1.4` | via the registry: `npm view privhaven-check@0.1.4 dist.integrity` |
 
 > Reproduce the offline artifact's hash from a clean checkout:
 > ```sh
