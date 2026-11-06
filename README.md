@@ -89,6 +89,11 @@ npm run build:html     # dist/check.html (offline single file)
 
 No runtime dependencies. Node 18 or newer.
 
+## About
+
+`privhaven-check` is published by [Mitikasha LLC](https://mitikasha.com), the maker of [PrivHaven](https://privhaven.com).
+Questions or issues: open a GitHub issue, or write to support@mitikasha.com.
+
 ## License
 
 MIT. See [LICENSE](LICENSE). The PrivHaven detection engine is **not** part of this repository and
