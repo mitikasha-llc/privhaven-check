@@ -12,8 +12,9 @@
 // path component whatever its name, keeps the last of duplicate entries, and the Mac's
 // disk is case-insensitive, so `Index.js` and `index.js` collapse into one file. Reading
 // the raw headers sees every entry exactly as stored, and anything unusual is rejected
-// rather than interpreted: only regular files and directories, only under `package/`,
-// no `..`, no absolute paths, no duplicates even by case, no pax/long-name records.
+// rather than interpreted: only exact ustar headers, only regular files and directories,
+// only under `package/`, no `..`, no absolute paths, no duplicates even by case, no
+// pax/long-name records, and nothing but zeros after the end-of-archive marker.
 import { readFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
@@ -43,7 +44,18 @@ let ended = false;
 while (off + 512 <= tar.length) {
   const h = tar.subarray(off, off + 512);
   if (h.every((b) => b === 0)) {
+    // End of archive. Everything after the first zero block must be zero too: a
+    // reader that skips a lone zero block (or ignores the marker) would otherwise
+    // find entries this check never compared.
+    if (!tar.subarray(off).every((b) => b === 0)) fail('non-zero data after the end-of-archive marker');
     ended = true;
+    break;
+  }
+  // Only exact POSIX ustar headers ("ustar\0" + "00", as npm writes them). GNU and v7
+  // headers use bytes 345-500 for other things, so the name a reader builds from the
+  // prefix field would depend on which format it assumes. Refuse rather than guess.
+  if (h.subarray(257, 263).toString('latin1') !== 'ustar\0' || h.subarray(263, 265).toString('latin1') !== '00') {
+    fail(`non-ustar tar header at offset ${off}`);
     break;
   }
   // Header checksum: the sum of all bytes with the checksum field read as spaces.
