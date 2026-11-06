@@ -55,37 +55,25 @@ ok "stage $STAGE_ID is $PKG@$VERSION"
 # --- 4. download the staged tarball and the tagged source ----------------------------
 WORK="$(mktemp -d "${TMPDIR:-/tmp}/phc-stage.XXXXXX")"
 trap 'rm -rf "$WORK"' EXIT
-mkdir -p "$WORK/dl" "$WORK/staged" "$WORK/tag"
+mkdir -p "$WORK/dl" "$WORK/tag"
 ( cd "$WORK/dl" && npm stage download "$STAGE_ID" >/dev/null ) || die "npm stage download failed"
-TGZ="$(find "$WORK/dl" -name '*.tgz' | head -1)"
-[ -n "$TGZ" ] || die "download produced no .tgz"
-tar -xzf "$TGZ" -C "$WORK/staged"
-[ -d "$WORK/staged/package" ] || die "tarball has no package/ directory"
+N_TGZ="$(find "$WORK/dl" -name '*.tgz' | wc -l | tr -d ' ')"
+[ "$N_TGZ" = "1" ] || die "expected exactly one .tgz from the download, got $N_TGZ"
+TGZ="$(find "$WORK/dl" -name '*.tgz')"
 git -C "$REPO" archive "$TAG" | tar -x -C "$WORK/tag"
 ok "downloaded $(basename "$TGZ") (sha1 $(shasum "$TGZ" | awk '{print $1}'))"
 
 # --- 5. compare: staged files must be byte-identical to the tag ------------------
-STAGED_VER="$(node -p "require('$WORK/staged/package/package.json').version")"
-[ "$STAGED_VER" = "$VERSION" ] || die "staged package.json says $STAGED_VER, expected $VERSION"
-
 # What SHOULD be in the tarball: npm's own file list for the tagged source.
-EXPECTED="$( cd "$WORK/tag" && npm pack --dry-run --json --ignore-scripts 2>/dev/null |
-  node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{for(const f of JSON.parse(s)[0].files)console.log(f.path)})' | sort )"
-[ -n "$EXPECTED" ] || die "could not compute the expected file list from $TAG"
-ACTUAL="$(cd "$WORK/staged/package" && find . -type f | sed 's|^\./||' | sort)"
+( cd "$WORK/tag" && npm pack --dry-run --json --ignore-scripts 2>/dev/null |
+  node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{for(const f of JSON.parse(s)[0].files)console.log(f.path)})' |
+  sort ) > "$WORK/expected.txt"
+[ -s "$WORK/expected.txt" ] || die "could not compute the expected file list from $TAG"
 
-bad=0
-if [ "$EXPECTED" != "$ACTUAL" ]; then
-  echo "✘ file lists differ (< in tag only, > in staged only):"
-  diff <(echo "$EXPECTED") <(echo "$ACTUAL") || true
-  bad=1
-fi
-while IFS= read -r f; do
-  [ -f "$WORK/tag/$f" ] || continue
-  cmp -s "$WORK/staged/package/$f" "$WORK/tag/$f" || { echo "✘ DIFFERS: $f"; bad=1; }
-done <<< "$ACTUAL"
-[ "$bad" -eq 0 ] || die "staged package does NOT match $TAG. Do not approve. Reject with: npm stage reject $STAGE_ID"
-ok "all $(echo "$ACTUAL" | wc -l | tr -d ' ') files are byte-identical to $TAG"
+# The staged tarball is read in place, never extracted: see verify-staged-tarball.mjs for
+# why (npm's path stripping, duplicates, symlinks and this Mac's case-insensitive disk).
+node "$REPO/scripts/verify-staged-tarball.mjs" "$TGZ" "$WORK/tag" "$WORK/expected.txt" "$VERSION" ||
+  die "staged package does NOT match $TAG. Do not approve. Reject with: npm stage reject $STAGE_ID"
 
 # --- 6. approve (2FA) ------------------------------------------------------------------
 read -r -p "  Approve and publish $PKG@$VERSION now? [y/N] " a
